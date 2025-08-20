@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perpisahan KKN</title>
+  <style>
+    :root{
+      --bg1:#ffecd2; --bg2:#fcb69f; --bg3:#ff9a9e; --bg4:#fad0c4;
+      --card: rgba(255,255,255,0.92);
+      --text:#444; --primary:#e74c3c; --wa:#25d366; --wa-dark:#128c7e; --blue:#3498db; --blue-dark:#2c80b4;
+    }
+    *{box-sizing:border-box}
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(270deg, var(--bg1), var(--bg2), var(--bg3), var(--bg4));
+      background-size: 800% 800%;
+      animation: bgAnimate 15s ease infinite;
+      color: var(--text);
+    }
+    @keyframes bgAnimate {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Canvas partikel */
+    #particles {
+      position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
+    }
+
+    /* Efek Hujan */
+    .rain {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1;
+    }
+    .drop {
+      position: absolute; width: 2px; height: 15px; background: rgba(255,255,255,0.7);
+      bottom: 100%; animation: fall linear infinite;
+    }
+    @keyframes fall { to { transform: translateY(110vh); } }
+
+    /* Kartu */
+    .card {
+      position: relative; z-index: 3;
+      background: var(--card);
+      padding: 35px;
+      border-radius: 26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      text-align: center;
+      width: min(92vw, 520px);
+      animation: fadeIn 1.2s ease;
+      backdrop-filter: blur(2px);
+    }
+    h1 { color: var(--primary); margin: 0 0 10px; font-size: clamp(22px, 4vw, 28px); }
+    p  { color: var(--text); font-size: clamp(14px, 2.4vw, 16px); line-height: 1.7; margin: 10px 0 18px; }
+
+    .btn {
+      display: inline-block; margin-top: 10px; padding: 14px 22px;
+      background: var(--wa); color: #fff; font-size: 16px; text-decoration: none;
+      border-radius: 40px; transition: transform .25s, background .25s;
+    }
+    .btn:hover { background: var(--wa-dark); transform: translateY(-1px) scale(1.03); }
+
+    .music-btn {
+      display: inline-block; margin-top: 12px; padding: 10px 18px;
+      background: var(--blue); color: white; font-size: 14px; border: none;
+      border-radius: 30px; cursor: pointer; transition: .25s;
+    }
+    .music-btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+    @keyframes fadeIn { from {opacity:0; transform: translateY(24px);} to {opacity:1; transform: translateY(0);} }
+
+    footer { margin-top: 12px; font-size: 12px; color: #666; }
+
+    /* Marquee kutipan */
+    .marquee-wrap{
+      position: absolute; left: 0; right: 0; bottom: 0;
+      z-index: 2; overflow: hidden;
+      background: rgba(0,0,0,0.18);
+      backdrop-filter: blur(2px);
+      border-top: 1px solid rgba(255,255,255,0.25);
+    }
+    .marquee {
+      display: flex; align-items:center; gap: 40px;
+      padding: 10px 0;
+      white-space: nowrap;
+      animation: scroll 28s linear infinite;
+    }
+    .marquee:hover{ animation-play-state: paused; }
+    .quote{
+      color: #fff; opacity: .95; font-size: clamp(12px, 2vw, 14px);
+      padding: 0 6px;
+    }
+    @keyframes scroll{
+      0%{ transform: translateX(0); }
+      100%{ transform: translateX(-50%); }
+    }
+    /* Duplikasi konten untuk loop mulus */
+    .marquee-inner{ display: inline-flex; gap: 40px; padding-left: 20px; }
+    .heart{ filter: drop-shadow(0 0 6px rgba(255,255,255,.6)); }
+
+    /* Aksesibilitas tombol */
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
+</head>
+<body>
+  <!-- Musik sedih autoplay (mute, diaktifkan tombol) -->
+  <audio id="bg-music" autoplay loop muted>
+    <source src="https://www.bensound.com/bensound-music/bensound-sadday.mp3" type="audio/mp3">
+    Browser Anda tidak mendukung audio.
+  </audio>
+
+  <!-- Partikel cahaya -->
+  <canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- Hujan -->
+  <div class="rain" aria-hidden="true"></div>
+
+  <!-- Konten -->
+  <div class="card" role="dialog" aria-labelledby="title" aria-describedby="desc">
+    <h1 id="title">✨ Perpisahan KKN ✨</h1>
+    <p id="desc">
+      Terima kasih atas kebersamaan, perjuangan, dan kenangan indah yang kita lalui bersama.<br>
+      Perpisahan ini bukan akhir, melainkan awal dari cerita baru kita masing-masing.<br>
+      Saya juga ingin memohon maaf yang sebesar-besarnya bila selama kebersamaan kita ada sikap, kata-kata, atau perbuatan saya yang kurang berkenan di hati.<span class="heart">❤️</span>
+    </p>
+
+    <!-- Tombol WhatsApp (ganti nomor & pesan sesuai kebutuhan) -->
+    <a class="btn"
+       href="https://wa.me/6285182699349?text=gpp%20ko%20kamu%20ga%20ada%20salah%20sama%20sekali,%20malahan%20aku%20yang%20punya%20banyak%20salah%20ke%20kamu%20jadi%20maafin%20semua%20kesalahan%20ku%20selama%20kkn%20ini%20ya%20."
+       target="_blank" rel="noopener">
+      Kirim Pesan Perpisahan 💌
+    </a>
+
+    <!-- Tombol Musik -->
+    <br>
+    <button class="music-btn" id="music-toggle" aria-pressed="false" onclick="toggleMusic()">
+      🔊 Nyalakan Musik
+    </button>
+
+    <footer>© Yshya_ </footer>
+  </div>
+
+  <!-- Marquee Kutipan -->
+  <div class="marquee-wrap" aria-label="Kutipan perpisahan berjalan">
+    <div class="marquee">
+      <div class="marquee-inner" id="mq1">
+        <span class="quote">“Setiap pertemuan ada perpisahan, tapi kenangan membuatnya tetap dekat.”</span>
+        <span class="quote">“Langkah berakhir di sini, doa mengantar kita melangkah lagi.”</span>
+        <span class="quote">“Terima kasih atas tawa, lelah, dan cerita yang kita bagi.”</span>
+        <span class="quote">“Bukan selamat tinggal, hanya sampai jumpa.”</span>
+        <span class="quote">“Kita pergi membawa pelajaran, pulang membawa harapan.”</span>
+        <span class="quote">“Waktu boleh berakhir, persaudaraan tetap berlanjut.”</span>
+      </div>
+      <!-- duplikasi untuk loop halus -->
+      <div class="marquee-inner" id="mq2" aria-hidden="true">
+        <span class="quote">“Setiap pertemuan ada perpisahan, tapi kenangan membuatnya tetap dekat.”</span>
+        <span class="quote">“Langkah berakhir di sini, doa mengantar kita melangkah lagi.”</span>
+        <span class="quote">“Terima kasih atas tawa, lelah, dan cerita yang kita bagi.”</span>
+        <span class="quote">“Bukan selamat tinggal, hanya sampai jumpa.”</span>
+        <span class="quote">“Kita pergi membawa pelajaran, pulang membawa harapan.”</span>
+        <span class="quote">“Waktu boleh berakhir, persaudaraan tetap berlanjut.”</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Efek hujan
+    const rain = document.querySelector('.rain');
+    for (let i = 0; i < 70; i++) {
+      const drop = document.createElement('div');
+      drop.className = 'drop';
+      drop.style.left = `${Math.random() * 100}vw`;
+      drop.style.height = `${10 + Math.random()*18}px`;
+      drop.style.opacity = `${0.5 + Math.random()*0.5}`;
+      drop.style.animationDuration = `${0.7 + Math.random()*1.2}s`;
+      drop.style.animationDelay = `${Math.random() * 4}s`;
+      rain.appendChild(drop);
+    }
+
+    // Toggle musik
+    const music = document.getElementById("bg-music");
+    const btn   = document.getElementById("music-toggle");
+    function toggleMusic() {
+      const willUnmute = music.muted;
+      music.muted = !willUnmute;
+      if (willUnmute) music.play();
+      btn.textContent = music.muted ? "🔊 Nyalakan Musik" : "🔇 Matikan Musik";
+      btn.setAttribute("aria-pressed", String(!music.muted));
+    }
+
+    // Partikel cahaya (bokeh ringan)
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    function resizeCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas); resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(init=false){
+        this.x = Math.random()*canvas.width;
+        this.y = Math.random()*canvas.height;
+        this.r = Math.random()*3 + 1.2;
+        this.sx = (Math.random()-0.5)*0.25;
+        this.sy = (Math.random()-0.5)*0.25;
+        this.alpha = 0.4 + Math.random()*0.6;
+        if(!init && Math.random()<0.5){ this.x = Math.random()<0.5? -10 : canvas.width+10; }
+      }
+      update(){
+        this.x += this.sx; this.y += this.sy;
+        if (this.x < -20 || this.x > canvas.width+20 || this.y < -20 || this.y > canvas.height+20) this.reset();
+      }
+      draw(){
+        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r*3.2);
+        grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+        grad.addColorStop(1, `rgba(255,255,255,0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r*3.2, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+    function initParticles(){
+      particles = [];
+      const count = Math.min(100, Math.floor((canvas.width*canvas.height)/22000));
+      for(let i=0;i<count;i++){ particles.push(new Particle()); }
+    }
+    function animate(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{ p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    initParticles(); animate();
+
+    // Pause marquee saat fokus keyboard (aksesibilitas)
+    const marquee = document.querySelector('.marquee');
+    marquee.addEventListener('focusin', ()=> marquee.style.animationPlayState='paused');
+    marquee.addEventListener('focusout', ()=> marquee.style.animationPlayState='running');
+  </script>
+</body>
+</html>
